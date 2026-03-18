@@ -61,6 +61,7 @@ $ps = array(
     'name' => 'PocketSpigot News Feed',
     'description' => 'PocketSpigot News Feed is an example of PocketSpigot using RSS to provide news via an API for Small Web Projects',
     'cache_to_db' => true,
+    'default_interval' => 3600,         // The default interval (in seconds) for fetching news items to DB.
     'db_ref' => NULL,                   // Do not touch, this will be set later by internal logic.
     'standalone' => false,
     'resource_type' => 'RSS',
