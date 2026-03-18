@@ -108,7 +108,7 @@ function db_check_freshness() {
 
 }
 
-function db_get_latest_entries($num) {
+function db_fetch_news_items($num) {
     // Implementation for fetching latest $num entries from the database
 
 }
