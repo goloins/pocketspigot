@@ -35,26 +35,42 @@ $ps_mysqli_settings = array(
 /*
     * General PocketSpigot Settings
     * This array contains general settings for the PocketSpigot instance. You can customize these settings as needed.
+    *
     * 'name' - The name of your PocketSpigot instance. For example, if you're using PocketSpigot to scrape the NPR Technology
     *       RSS feed, you might set this to "NPR Technology News".
+    *
     * 'description' - A brief description of your PocketSpigot instance. This can be used for documentation or display purposes.
+    *
     * 'cache_to_db' - A boolean setting that determines whether to cache news items to a MySQL database. If set to false,
     *       news items will not be cached to the database and will be fetched directly from the RSS feed each time.
     *       WARNING: Setting this to false may lead to increased load on the RSS feed and may cause issues if the feed is rate-limited.
+    *
     * 'standalone' - A boolean setting that indicates whether this PocketSpigot instance is standalone or if you're directing it from
     *       PocketMain. If you're just mirroring one feed and not using PocketMain to manage multiple feeds, you can set this to true.
-
+    *
+    * 'resource_type' - A string that indicates the type of resource being scraped. Your options include:
+            * 'RSS' - For RSS feeds. This is the most common resource type for PocketSpigot.
+            * 'HTML' - For scraping news items directly from HTML pages. As a wise man once said, you cannot use REGEX to parse HTML
+                    However, we're stupid so we're going to do it anyway. Read on for more details on how to use this resource type.
+            * 'API' - For scraping news items from APIs. Read on for more details on how to use this resource type.
+    * 'resource_settings' - An array that contains settings specific to the resource type being scraped. This points to an object
+                    customized for the resource type being scraped. 
 */
 
 $ps = array(
     'name' => 'PocketSpigot News Feed',
     'description' => 'PocketSpigot News Feed is an example of PocketSpigot using RSS to provide news via an API for Small Web Projects',
     'cache_to_db' => true,
-    'db_ref' = NULL,
-    'standalone' => false
+    'db_ref' => NULL,                   // Do not touch, this will be set later by internal logic.
+    'standalone' => false,
+    'resource_type' => 'RSS',
+    'resource_settings' => NULL         // Do not touch, this will be set later by internal logic.
     );
 
-global $ps;
+
+
+
+
 
 // Building the database connection if caching to the database is enabled, 
 // then shoveling the database reference into the $ps array for simplicitys sake
@@ -69,3 +85,4 @@ if($ps['cache_to_db']) {
     }
 }
 
+global $ps;
