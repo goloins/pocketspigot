@@ -18,3 +18,28 @@
  
 include_once 'settings.php';
 
+
+// The basic RSS fetch function, this will be used if the resource type is set to RSS.
+// Feel free to tear it apart, it's basic and lean.
+function ps_fetch_rss_feed($url) {
+    // Fetch the RSS feed and return the items as an array
+    $rss = simplexml_load_file($url);
+    $items = array();
+    foreach ($rss->channel->item as $item) {
+        $items[] = array(
+            'title' => (string)$item->title,
+            'link' => (string)$item->link,
+            'description' => (string)$item->description,
+            'pubDate' => (string)$item->pubDate
+        );
+    }
+    return $items;
+}
+
+// The basic API data fetch function. You can customize what you pull from it here or from the 
+// returned data in main.php
+function ps_fetch_api_data($url) {
+    // Fetch data from an API and return it as an array
+    $response = file_get_contents($url);
+    return json_decode($response, true);
+}
