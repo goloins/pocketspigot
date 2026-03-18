@@ -26,3 +26,23 @@
  
 include_once 'settings.php';
 include_once 'functions.php';
+
+
+
+global $letsgo;
+
+if(!db_check_freshness()) {
+    // If the data is not fresh, fetch new data and update the database
+    $news_items = ps_fetch_resource();
+    if($ps['cache_to_db']) {
+        db_compare_feed_and_update();
+    }
+} else {
+    // If the data is fresh, fetch it from the database
+    $news_items = db_fetch_news_items();
+}
+function build_response($news_items) {
+    // This is where you would customize the response format. The example here simply returns the news items as a JSON array.
+    // You can customize this to return whatever format you want, such as XML, HTML, or a custom API response.
+    return json_encode($news_items);
+}

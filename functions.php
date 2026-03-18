@@ -43,7 +43,7 @@ function ps_fetch_rss_feed($url) {
             'description' => (string)$item->description,
             'pubDate' => (string)$item->pubDate
         );
-    }
+    }    
     return $items;
 }
 
@@ -67,6 +67,24 @@ function ps_fetch_html_data($url, $regex) {
 }
 
 
+// This is the wrapper function that contains logic for which fetch function to use based on the resource type.
+// It is the magical third place where you must add any additional resource types. This reminds me
+// of how you have to add syscalls in a billion different places in xv6. 
+
+function ps_fetch_resource() {
+    global $ps;
+    switch($ps['resource_type']) {
+        case 'RSS':
+            return ps_fetch_rss_feed($ps['resource_settings']['url']);
+        case 'API':
+            return ps_fetch_api_data($ps['resource_settings']['url']);
+        case 'HTML':
+            return ps_fetch_html_data($ps['resource_settings']['url'], $ps['resource_settings']['regex']);
+        default:
+            die("Invalid resource type specified in settings.php");
+    }
+}   
+
 /* 
 
 Core Database Functionality
@@ -76,6 +94,19 @@ It is HIGHLY recommended you use the database for this,
 otherwise someone will block your IP for hitting their shit too much.
 
 */
+
+
+function db_check_freshness() {
+    $sql = "SELECT pubDate FROM feed_items ORDER BY pubDate DESC LIMIT 1";
+    $stmt = $ps->db_ref->prepare($sql);
+    $stmt->execute();
+    $curdat = $stmt->fetchColumn();
+    if($curdat - time() > 3600) { // If the latest item is older than 1 hour
+        return false;
+    }
+    return true;
+
+}
 
 function db_get_latest_entries($num) {
     // Implementation for fetching latest $num entries from the database
@@ -87,6 +118,8 @@ function db_insert_feed_item($item) {
 }
 
 function db_compare_feed_and_update(){
-    // Implementation for comparing feed data and updating the database
-}
+     // Implementation for fetching latest $num entries from the database
+    // will compare the latest entries in the db with the latest in the feed
+    // and build a list of them to be inserted.
 
+}
